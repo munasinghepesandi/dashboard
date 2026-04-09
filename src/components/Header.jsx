@@ -1,8 +1,8 @@
 import { useMemo, useState } from "react";
 import logo from '../assets/logo.png';
-import { BellOutlined, SearchOutlined, UserOutlined } from '@ant-design/icons';
+import { BellOutlined, MenuOutlined, SearchOutlined, UserOutlined } from '@ant-design/icons';
 
-function Header ({ user, onLogout }){
+function Header ({ user, onLogout, onToggleMenu, isMobileMenuOpen }){
     const [query, setQuery] = useState("");
     const quickLinks = [
         "Dashboard",
@@ -27,6 +27,15 @@ function Header ({ user, onLogout }){
 
     return(
         <header className="header-bar">
+            <button
+                className="mobile-menu-btn"
+                type="button"
+                onClick={onToggleMenu}
+                aria-label={isMobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
+                aria-expanded={isMobileMenuOpen}
+            >
+                <MenuOutlined />
+            </button>
             <div className="brand-wrap">
                 <img src={logo} alt="PM Education" className="brand-logo" />
                 <div className="brand-text">

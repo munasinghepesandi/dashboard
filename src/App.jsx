@@ -24,6 +24,7 @@ const DEFAULT_STUDENT = {
 function App() {
  const [currentUser, setCurrentUser] = useState(null);
  const [activeSection, setActiveSection] = useState("dashboard");
+ const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
  useEffect(() => {
   const storedSession = localStorage.getItem(SESSION_KEY);
@@ -67,7 +68,13 @@ function App() {
 
  const handleLogout = () => {
   setCurrentUser(null);
+  setIsMobileMenuOpen(false);
   localStorage.removeItem(SESSION_KEY);
+ };
+
+ const handleSectionChange = (sectionKey) => {
+  setActiveSection(sectionKey);
+  setIsMobileMenuOpen(false);
  };
 
  const renderSection = () => {
@@ -104,10 +111,33 @@ function App() {
 
  return(
   <div className="app-shell">
-    <Header user={currentUser} onLogout={handleLogout} />
+    <Header
+      user={currentUser}
+      onLogout={handleLogout}
+      onToggleMenu={() => setIsMobileMenuOpen((prev) => !prev)}
+      isMobileMenuOpen={isMobileMenuOpen}
+    />
+    {isMobileMenuOpen && (
+      <button
+        type="button"
+        className="mobile-sidebar-overlay"
+        aria-label="Close menu"
+        onClick={() => setIsMobileMenuOpen(false)}
+      />
+    )}
     <div className="app-layout">
-      <aside className="app-sidebar">
-        <Nav activeSection={activeSection} onSectionChange={setActiveSection} />
+      <aside className="app-sidebar app-sidebar-desktop">
+        <Nav activeSection={activeSection} onSectionChange={handleSectionChange} />
+      </aside>
+      <aside className={`app-sidebar app-sidebar-mobile ${isMobileMenuOpen ? "open" : ""}`}>
+        <div className="mobile-sidebar-header">
+          <h2>{currentUser?.name || "Student"}</h2>
+          <p>{currentUser?.role || "Student"}</p>
+          <button className="logout-btn mobile-logout-btn" onClick={handleLogout} type="button">
+            Logout
+          </button>
+        </div>
+        <Nav activeSection={activeSection} onSectionChange={handleSectionChange} />
       </aside>
       <main className="app-main">
         {renderSection()}
