@@ -1,52 +1,50 @@
 import React from "react";
 import {
-  AppstoreOutlined,
   MailOutlined,
   UserOutlined,
   DashboardOutlined,
   ScheduleOutlined,
   FileTextOutlined,
   CheckCircleOutlined,
-  SettingOutlined,
 } from "@ant-design/icons";
 import { Menu } from "antd";
 
 
 const items = [
   {
-    key: "sub1",
+    key: "dashboard",
     label: "Dashboard",
     icon: <DashboardOutlined />,
     
   },
   {
-    key: "sub2",
-    label: "Student Details",
+    key: "student-details",
+    label: "My Profile",
     icon: <UserOutlined />,
     
   },
   
   {
-    key: "sub3",
-    label: "Class Shedule",
+    key: "class-schedule",
+    label: "My Schedule",
     icon: <ScheduleOutlined />,
     
   },
   {
-    key: "sub4",
-    label: "Exams & Results",
+    key: "exam-results",
+    label: "My Results",
     icon: <MailOutlined />,
     
   },
   {
-    key: "sub5",
-    label: "Attendance",
+    key: "attendance",
+    label: "My Attendance",
     icon: <CheckCircleOutlined />,
     
   },
   {
-    key: "sub6",
-    label: "Upload Assesments",
+    key: "upload-assessments",
+    label: "My Assessments",
     icon: <FileTextOutlined />,
     
   },
@@ -57,28 +55,21 @@ const items = [
   
 ];
 
-function Nav(){
-     const onClick = (e) => {
-    console.log("click ", e);
+function Nav({ activeSection, onSectionChange }){
+  const onClick = (e) => {
+    onSectionChange(e.key);
   };
 
   return (
-    <>
-      <div className="w-full flex h-screen ">
-        <div className="w-1/5 shadow h-full ">
-          <Menu
-            onClick={onClick}
-            style={{ width: 256, height:"100%", borderRight: 0}}
-            defaultSelectedKeys={["1"]}
-            defaultOpenKeys={["sub1"]}
-            mode="inline"
-            items={items}
-          />
-        </div>
-        
+      <div className="sidebar-shell">
+        <Menu
+          onClick={onClick}
+          style={{ width: "100%", borderRight: 0, background: "transparent" }}
+          selectedKeys={[activeSection]}
+          mode="inline"
+          items={items}
+        />
       </div>
-      
-    </>
   );
 }
 

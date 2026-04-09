@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useMemo, useState } from "react";
 
 function Class() {
+  const [activeDay, setActiveDay] = useState("All");
+  const [searchTerm, setSearchTerm] = useState("");
   
   const classes = [
     {
@@ -9,7 +11,7 @@ function Class() {
       teacher: "Mr. Silva",
       time: "08:30 AM - 10:30 AM",
       day: "Monday",
-      color: "bg-blue-100",
+      color: "Core",
     },
     {
       id: 2,
@@ -17,7 +19,7 @@ function Class() {
       teacher: "Mrs. Jayasinghe",
       time: "10:15 AM - 11:45 AM",
       day: "Tuesday",
-      color: "bg-green-100",
+      color: "Theory",
     },
     {
       id: 3,
@@ -25,7 +27,7 @@ function Class() {
       teacher: "Ms. Perera",
       time: "01:00 PM - 02:30 PM",
       day: "Wednesday",
-      color: "bg-yellow-100",
+      color: "Practical",
     },
     
     {
@@ -34,7 +36,7 @@ function Class() {
       teacher: "Ms. Perera",
       time: "01:00 PM - 02:30 PM",
       day: "Wednesday",
-      color: "bg-yellow-100",
+      color: "Language",
     },
     {
       id: 5,
@@ -42,59 +44,86 @@ function Class() {
       teacher: "Mr. Jayasinghe",
       time: "02:45 PM - 04:15 PM",
       day: "Thursday",
-      color: "bg-pink-100",
+      color: "Lab Session",
     },
     {
-      id: 1,
-      subject: "Mathematics",
-      teacher: "Mr. Silva",
-      time: "08:30 AM - 10:30 AM",
-      day: "Monday",
-      color: "bg-blue-100",
+      id: 6,
+      subject: "Software Engineering",
+      teacher: "Ms. Fernando",
+      time: "04:30 PM - 06:00 PM",
+      day: "Friday",
+      color: "Project Sprint",
     }
   ];
 
-  return (
-    <div className="min-h-screen bg-gray-50 p-6">
-      <div className="max-w-7xl mx-auto">
-        <h2 className="text-3xl font-bold text-gray-800  mb-8">
-          Class Schedule
-        </h2>
+  const dayFilters = ["All", ...new Set(classes.map((cls) => cls.day))];
 
-        { }
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {classes.map((cls) => (
+  const filteredClasses = useMemo(() => {
+    return classes.filter((cls) => {
+      const byDay = activeDay === "All" || cls.day === activeDay;
+      const bySearch =
+        cls.subject.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        cls.teacher.toLowerCase().includes(searchTerm.toLowerCase());
+
+      return byDay && bySearch;
+    });
+  }, [activeDay, searchTerm]);
+
+  return (
+    <section className="schedule-section">
+      <h2 className="section-title">My Schedule</h2>
+      <p className="section-subtitle">Plan your week with quick actions and details.</p>
+
+      <div className="schedule-toolbar">
+        <input
+          type="text"
+          className="class-search"
+          placeholder="Search by subject or teacher"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+        <div className="day-filters">
+          {dayFilters.map((day) => (
+            <button
+              key={day}
+              type="button"
+              className={`day-filter-btn ${activeDay === day ? "active" : ""}`}
+              onClick={() => setActiveDay(day)}
+            >
+              {day}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <p className="result-count">Showing {filteredClasses.length} classes</p>
+
+      <div className="schedule-grid">
+          {filteredClasses.map((cls) => (
             <div
               key={cls.id}
-              className={`p-6 rounded-2xl shadow-md ${cls.color} dark:bg-gray-600 transition transform hover:-translate-y-1 hover:shadow-lg`}
+              className="class-card"
             >
-              <h2 className="text-xl font-semibold text-gray-800 dark:text-white mb-2">
-                {cls.subject}
-              </h2>
-              <p className="text-gray-600 dark:text-gray-300 mb-1">
-                <span className="font-medium">Teacher:</span> {cls.teacher}
-              </p>
-              <p className="text-gray-600 dark:text-gray-300 mb-1">
-                <span className="font-medium">Day:</span> {cls.day}
-              </p>
-              <p className="text-gray-600 dark:text-gray-300 mb-4">
-                <span className="font-medium">Time:</span> {cls.time}
-              </p>
+              <h3>{cls.subject}</h3>
+              <span className="chip">{cls.color}</span>
+              <div className="class-meta">
+                <div><strong>Teacher:</strong> {cls.teacher}</div>
+                <div><strong>Day:</strong> {cls.day}</div>
+                <div><strong>Time:</strong> {cls.time}</div>
+              </div>
 
-              {/* Action Buttons */}
-              <div className="flex space-x-3">
-                <button className="px-4 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700">
+              <div className="class-actions">
+                <button className="btn-primary">
                   Join Class
                 </button>
-                <button className="px-4 py-2 bg-gray-200 text-gray-800 text-sm rounded-lg hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600">
+                <button className="btn-muted">
                   View Details
                 </button>
               </div>
             </div>
           ))}
-        </div>
       </div>
-    </div>
+    </section>
   );
 }
 
